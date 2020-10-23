@@ -21,7 +21,7 @@ public class CommandReader {
 
         commands.put("delete", (reader, dataOutputStream, cmd, args) -> {
 
-            reader.delete(args, dataOutputStream);
+            reader.delete(dataOutputStream, args);
 
         });
 
@@ -97,7 +97,19 @@ public class CommandReader {
 
     }
 
-    public void delete(String line, DataOutputStream dataOutputStream) { }
+    public void delete(DataOutputStream dataOutputStream, String path) {
+
+        File file = new File(path);
+
+        if(file.exists() && file.isDirectory()){
+            file.delete();
+            System.out.println("Archivo creado");
+        }
+        else {
+            System.out.println("Archivo no encontrado");
+        }
+
+    }
 
     public void download(String line, DataOutputStream dataOutputStream) {}
 
