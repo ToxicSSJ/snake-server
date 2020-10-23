@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Main {
 
-    public static final int PORT = 5010;
+    public static final int PORT = 4000;
 
     public static void main(String[] args) throws IOException {
 

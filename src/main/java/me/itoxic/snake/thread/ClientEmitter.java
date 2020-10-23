@@ -12,7 +12,7 @@ public class ClientEmitter implements Runnable {
 
         try {
 
-            Socket socketCliente = new Socket("localhost", 5010);
+            Socket socketCliente = new Socket("localhost", 4000);
             CommandReader commandReader = new CommandReader();
 
             BufferedReader entrada = new BufferedReader(new InputStreamReader(socketCliente.getInputStream()));

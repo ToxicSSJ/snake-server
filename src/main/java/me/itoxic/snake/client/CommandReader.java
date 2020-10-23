@@ -19,13 +19,39 @@ public class CommandReader {
 
         });
 
-        commands.put("hello", (reader, dataOutputStream, cmd, args) -> {
+        commands.put("delete", (reader, dataOutputStream, cmd, args) -> {
 
-            try {
-                dataOutputStream.writeUTF("HELLO!");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            reader.delete(args, dataOutputStream);
+
+        });
+
+        commands.put("deleteBucket", (reader, dataOutputStream, cmd, args) -> {
+
+            reader.deleteBucket(args, dataOutputStream);
+
+        });
+
+        commands.put("createBucket", (reader, dataOutputStream, cmd, args) -> {
+
+            reader.createBucket(dataOutputStream, args);
+
+        });
+
+        commands.put("listBucket", (reader, dataOutputStream, cmd, args) -> {
+
+            reader.listBucket(args, dataOutputStream);
+
+        });
+
+        commands.put("download", (reader, dataOutputStream, cmd, args) -> {
+
+            reader.download(args, dataOutputStream);
+
+        });
+
+        commands.put("list", (reader, dataOutputStream, cmd, args) -> {
+
+            reader.list(args, dataOutputStream);
 
         });
 
@@ -69,6 +95,29 @@ public class CommandReader {
 
         System.err.println("Archivo no valido");
 
+    }
+
+    public void delete(String line, DataOutputStream dataOutputStream) { }
+
+    public void download(String line, DataOutputStream dataOutputStream) {}
+
+    public void list(String line, DataOutputStream dataOutputStream) { }
+
+    public void listBucket(String line, DataOutputStream dataOutputStream) { }
+
+    public void deleteBucket(String line, DataOutputStream dataOutputStream) { }
+
+    public void createBucket(DataOutputStream dataOutputStream, String path) {
+
+        File file = new File(path);
+
+        if(!file.isDirectory()){
+            new File(path).mkdirs();
+            System.out.println("Carpeta creada");
+        }
+        else {
+            System.out.println("Carpeta ya existente");
+        }
     }
 
 }
