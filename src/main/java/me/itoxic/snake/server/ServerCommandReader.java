@@ -152,16 +152,7 @@ public class ServerCommandReader extends SnakeReader {
 
         commands.put("CLOSE", (reader, cmd, input, output) -> {
 
-            String uptime = reader.getServer().getUptime();
-
-            reader.getReceiver().emit(Response.UPTIME);
-
-            try {
-
-                output.writeUTF(uptime);
-
-            } catch (IOException e) {}
-
+            reader.getReceiver().emit(Response.CLOSE);
             return;
 
         });

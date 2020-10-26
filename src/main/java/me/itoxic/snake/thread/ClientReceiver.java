@@ -103,7 +103,6 @@ public class ClientReceiver implements Runnable {
                     output.writeLong(fileContent.length); // Tamaño del archivo
                     output.write(fileContent); // Enviar archivo
 
-
                     Logger.info("File " + baseFile.getName() + " sended to client, closing sub-channel...");
                     input.close();
                     output.close();

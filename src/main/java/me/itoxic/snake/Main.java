@@ -8,8 +8,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
 
 public class Main {
 
