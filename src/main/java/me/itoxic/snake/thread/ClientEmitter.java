@@ -1,6 +1,8 @@
 package me.itoxic.snake.thread;
 
-import me.itoxic.snake.client.CommandReader;
+import me.itoxic.snake.Main;
+import me.itoxic.snake.client.ClientCommandReader;
+import me.itoxic.snake.logging.Logger;
 
 import java.io.*;
 import java.net.Socket;
@@ -12,44 +14,63 @@ public class ClientEmitter implements Runnable {
 
         try {
 
-            Socket socketCliente = new Socket("localhost", 4000);
-            CommandReader commandReader = new CommandReader();
+            Socket clientSocket = new Socket(Main.DEFAULT_SERVER_HOST, Main.DEFAULT_PORT);
+            ClientCommandReader commandReader = ClientCommandReader.getInstance();
 
-            BufferedReader entrada = new BufferedReader(new InputStreamReader(socketCliente.getInputStream()));
-            DataOutputStream output = new DataOutputStream(socketCliente.getOutputStream());
+            DataInputStream input = new DataInputStream(clientSocket.getInputStream());
+            DataOutputStream output = new DataOutputStream(clientSocket.getOutputStream());
 
             BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+            String cliLine;
 
-            String linea;
+            clientSocket.setSoTimeout(1000 * 960);
+            output.writeUTF("client"); // Se le envía el tipo de conexión al servidor.
 
-            try {
+            Logger.info("Client initialized, now you can write comamnds.");
 
-                while (true) {
+            while (true) {
 
-                    linea = stdIn.readLine();
-                    commandReader.read(linea, output);
+                cliLine = stdIn.readLine();
 
-                    // output.writeUTF(linea);
-                    while((linea = entrada.readLine()) != null) {
-                        System.out.println("Respuesta servidor: " + linea);
-                    }
+                try {
 
-                    if (linea.equals("Adios")) break;
+                    boolean valid = commandReader.run(cliLine, input, output);
+
+                    if(!valid)
+                        continue;
+
+                    int code = input.readInt();
+                    String msg = input.readUTF();
+
+                    Logger.net("Server Response: " + code + " " + msg);
+
+                } catch(IOException e) {
+
+                    Logger.error("Connection reset by peer, reconnecting...");
+                    run();
+                    return;
+
+                } catch (Exception e) {
+
+                    Logger.error("Internal exception, please reopen the client.");
+                    return;
 
                 }
 
-            } catch (IOException e) {
-                System.out.println("IOException: " + e.getMessage());
             }
 
-            output.close();
-            entrada.close();
-            stdIn.close();
-            socketCliente.close();
-
         } catch (IOException e) {
-            System.err.println("No puede establer canales de E/S para la conexión");
-            System.exit(-1);
+
+            e.printStackTrace();
+            Logger.error("Unable to connect to the host, reconnecting in 5 seconds...");
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException interruptedException) { interruptedException.printStackTrace(); }
+
+            run();
+            return;
+
         }
 
     }
